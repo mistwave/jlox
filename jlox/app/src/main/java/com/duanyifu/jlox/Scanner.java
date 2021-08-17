@@ -1,7 +1,6 @@
 package com.duanyifu.jlox;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.duanyifu.jlox.TokenType.*;
 
@@ -11,6 +10,28 @@ import static com.duanyifu.jlox.TokenType.*;
 public class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
+
+    private static final Map<String, TokenType> keywords;
+
+    static {
+        keywords = Map.ofEntries(
+                Map.entry("and", AND),
+                Map.entry("class", CLASS),
+                Map.entry("else", ELSE),
+                Map.entry("false", FALSE),
+                Map.entry("fun", FUN),
+                Map.entry("for", FOR),
+                Map.entry("if", IF),
+                Map.entry("nil", NIL),
+                Map.entry("or", OR),
+                Map.entry("print", PRINT),
+                Map.entry("return", RETURN),
+                Map.entry("super", SUPER),
+                Map.entry("this", THIS),
+                Map.entry("var", VAR),
+                Map.entry("while", WHILE)
+        );
+    }
 
     private int start = 0;
     private int current = 0;
@@ -104,14 +125,74 @@ public class Scanner {
                 break;
 
             default:
-                Lox.error(line, "Unexpected character.");
+                if (isDigit(c)) {
+                    number();
+                } else if (isAlpha(c)) {
+                    identifier();
+                } else {
+                    Lox.error(line, "Unexpected character.");
+                }
                 break;
         }
     }
 
-    private void string() {
-        // todo
+    private boolean isAlpha(char c) {
+        return (c >= 'a' && c <= 'z')
+                || (c >= 'A' && c <= 'Z')
+                || c == '_';
+    }
 
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
+    }
+
+    private boolean isAlphaNumeric(char c) {
+        return isDigit(c) || isAlpha(c);
+    }
+
+    private void identifier() {
+        while (isAlphaNumeric(peek())) advance();
+
+        String text = source.substring(start, current);
+        TokenType type = keywords.get(text);
+        addToken(type != null ? type : IDENTIFIER);
+    }
+
+    private void number() {
+        while (isDigit(peek())) advance();
+
+        // look for a fractional part
+        if (peek() == '.' && isDigit(peekNext())) {
+            advance();
+
+            while (isDigit(peek())) advance();
+        }
+
+        addToken(NUMBER,
+                Double.parseDouble(source.substring(start, current)));
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') line++;
+            advance();
+        }
+
+        if (isAtEnd()) {
+            Lox.error(line, "Unterminated string.");
+            return;
+        }
+
+        // for the closing "
+        advance();
+
+        // "abc"
+        // ^    ^
+        // |    |
+        // |   current
+        // start
+        String value = source.substring(start + 1, current - 1);
+        addToken(STRING, value);
     }
 
     private boolean match(char expected) {
@@ -137,6 +218,11 @@ public class Scanner {
         }
 
         return source.charAt(current);
+    }
+
+    private char peekNext() {
+        if (current + 1 >= source.length()) return '\0';
+        return source.charAt(current + 1);
     }
 
     void addToken(TokenType type) {
