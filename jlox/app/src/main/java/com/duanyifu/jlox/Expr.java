@@ -1,37 +1,40 @@
 package com.duanyifu.jlox;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 
-/**
- * @author yifuduan on 2021/8/18
- */
-public abstract class Expr {
-
-
-    @AllArgsConstructor
-    static class Literal extends Expr {
-        final Token token;
+abstract class Expr {
+  static class Binary extends Expr {
+    Binary(Expr left, Token operator, Expr right) {
+      this.left = left;
+      this.operator = operator;
+      this.right = right;
     }
 
-    @AllArgsConstructor
-    static class Unary extends Expr {
-        final Token prefix;
-        final Expr expr;
+    final Expr left;
+    final Token operator;
+    final Expr right;
+  }
+  static class Grouping extends Expr {
+    Grouping(Expr expression) {
+      this.expression = expression;
     }
 
-    @AllArgsConstructor
-    static class Binary extends Expr {
-        final Expr left;
-        final Token operator;
-        final Expr right;
+    final Expr expression;
+  }
+  static class Literal extends Expr {
+    Literal(Object value) {
+      this.value = value;
     }
 
-    @AllArgsConstructor
-    static class Grouping extends Expr {
-        final Expr expr;
+    final Object value;
+  }
+  static class Unary extends Expr {
+    Unary(Token operator, Expr right) {
+      this.operator = operator;
+      this.right = right;
     }
 
-
-
-
+    final Token operator;
+    final Expr right;
+  }
 }
