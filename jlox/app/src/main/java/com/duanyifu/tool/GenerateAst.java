@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author yifuduan on 2021/8/18
@@ -35,6 +36,8 @@ public class GenerateAst {
         writer.println();
         writer.println("abstract class " + baseName + " {");
 
+        defineVisitor(writer, baseName, types);
+
 
         for (String type : types) {
             String className = type.split(":")[0].trim();
@@ -42,11 +45,17 @@ public class GenerateAst {
             defineType(writer, baseName, className, fields);
         }
 
+
+        // the base accept() method
+        writer.println();
+        writer.println("  abstract <R> R accept(Visitor<R> visitor);");
+
+
         writer.println("}");
         writer.close();
     }
 
-    static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
+    private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
 
         writer.println("  static class " + className + " extends " + baseName + " {");
 
@@ -54,7 +63,7 @@ public class GenerateAst {
         writer.println("    " + className + "(" + fieldList + ") {");
 
         // Store parameters in fields.
-        String[] fields  = fieldList.split(", ");
+        String[] fields = fieldList.split(", ");
         for (String field : fields) {
             String name = field.split(" ")[1];
             writer.println("      this." + name + " = " + name + ";");
@@ -62,6 +71,12 @@ public class GenerateAst {
 
         writer.println("    }");
 
+        // Visitor patterns
+        writer.println();
+        writer.println("    @Override");
+        writer.println("    <R> R accept(Visitor<R> visitor) {");
+        writer.println("      return visitor.visit" + className + baseName + "(this);");
+        writer.println("    }");
 
         // Fields.
         writer.println();
@@ -70,5 +85,22 @@ public class GenerateAst {
         }
 
         writer.println("  }");
+    }
+
+    private static void defineVisitor(
+            PrintWriter writer, String baseName, List<String> types
+    ) {
+        writer.println("  interface Visitor<R> {");
+
+        for (String type : types) {
+            String typeName = type.split(":")[0].trim();
+
+            writer.println("    R visit" + typeName + baseName + "(" +
+                    typeName + " " + baseName.toLowerCase(Locale.ROOT) + ");");
+
+        }
+
+        writer.println("  }");
+
     }
 }
