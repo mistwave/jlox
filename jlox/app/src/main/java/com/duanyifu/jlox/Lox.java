@@ -14,6 +14,9 @@ import java.util.List;
 public class Lox {
 
     private static boolean hadError = false;
+    private static boolean hadRuntimeError = false;
+
+    private static final Interpreter interpreter = new Interpreter();
 
     public static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
@@ -22,12 +25,17 @@ public class Lox {
         if (hadError) {
             System.exit(65);
         }
+
+        if(hadRuntimeError) {
+            System.exit(70);
+        }
     }
 
     public static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
+        System.out.println("Welcome to jlox 0.1.1.yifu");
         while (true) {
             System.out.print("> ");
             String line = reader.readLine();
@@ -50,6 +58,11 @@ public class Lox {
         }
     }
 
+    static void runtimeError(RuntimeError error) {
+        System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+        hadRuntimeError = true;
+    }
+
     private static void report(int line, String where, String message) {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         hadError = true;
@@ -66,7 +79,7 @@ public class Lox {
 
         if (hadError) return;
 
-        System.out.println(new AstPrinter().print(expression));
+        interpreter.interpret(expression);
     }
 
 
