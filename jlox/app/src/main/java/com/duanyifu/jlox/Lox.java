@@ -26,7 +26,7 @@ public class Lox {
             System.exit(65);
         }
 
-        if(hadRuntimeError) {
+        if (hadRuntimeError) {
             System.exit(70);
         }
     }
@@ -41,11 +41,13 @@ public class Lox {
             String line = reader.readLine();
             // Control-D will return EOF, i.e. null
             if (line == null) break;
+            if (!line.endsWith(";")) line = line + ";";
             run(line);
             hadError = false;
         }
 
     }
+
     static void error(int line, String message) {
         report(line, "", message);
     }
@@ -69,17 +71,16 @@ public class Lox {
     }
 
 
-
     public static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        List<Stmt> statements = parser.parse();
 
         if (hadError) return;
 
-        interpreter.interpret(expression);
+        interpreter.interpret(statements);
     }
 
 

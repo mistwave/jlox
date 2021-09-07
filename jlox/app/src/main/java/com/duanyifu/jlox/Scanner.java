@@ -1,6 +1,8 @@
 package com.duanyifu.jlox;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static com.duanyifu.jlox.TokenType.*;
 
@@ -18,6 +20,7 @@ public class Scanner {
                 Map.entry("and", AND),
                 Map.entry("class", CLASS),
                 Map.entry("else", ELSE),
+                Map.entry("true", TRUE),
                 Map.entry("false", FALSE),
                 Map.entry("fun", FUN),
                 Map.entry("for", FOR),
