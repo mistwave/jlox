@@ -46,7 +46,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.duanyifu.jlox.App'
+    mainClass = 'com.duanyifu.jlox.Lox'
 }
 
 tasks.named('test') {
