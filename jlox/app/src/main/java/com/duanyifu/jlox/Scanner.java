@@ -32,7 +32,8 @@ public class Scanner {
                 Map.entry("super", SUPER),
                 Map.entry("this", THIS),
                 Map.entry("var", VAR),
-                Map.entry("while", WHILE)
+                Map.entry("while", WHILE),
+                Map.entry("break", BREAK)
         );
     }
 

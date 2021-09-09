@@ -55,9 +55,16 @@ public class Parser {
         if (match(IF)) return ifStatement();
         if (match(PRINT)) return printStatement();
         if (match(WHILE)) return whileStatement();
+        if (match(BREAK)) return breakStatement();
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
 
         return expressionStatement();
+    }
+
+    private Stmt breakStatement() {
+        consume(SEMICOLON, "Excepted ';' after 'break'.");
+
+        return new Stmt.Break(null);
     }
 
     private Stmt forStatement() {
