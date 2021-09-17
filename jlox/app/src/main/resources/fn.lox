@@ -1,0 +1,22 @@
+fun sayHi(first, last) {
+  print "hi, " + first + " " + last + "!";
+}
+
+sayHi("Dear", "ff");
+
+
+
+fun fib(n) {
+    fun iter(a, b, n) {
+        if (n <= 0) {
+          return b;
+        } else {
+          return iter(a + b, a, n-1);
+        }
+    }
+    return iter(1, 1, n);
+}
+
+for(var i=0; i<10; i=i+1) {
+    print fib(i);
+}
