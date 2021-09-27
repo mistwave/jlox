@@ -1,0 +1,13 @@
+var a = "foo";
+
+
+{
+    var a = "bbbbbb";
+    fun pa() {
+        print(a);
+    }
+
+    pa();
+    a = 3;
+    pa();
+}
