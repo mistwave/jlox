@@ -1,0 +1,22 @@
+class Foo {
+  init(ans) {
+    this.answer = ans;
+  }
+
+  printAnswer() {
+    print "The answer is:";
+    print this.answer;
+  }
+}
+
+print Foo;
+
+var foo = Foo(42);
+
+print foo;
+
+foo.printAnswer();
+
+foo.bar = 12345;
+
+print foo.bar;
