@@ -4,6 +4,18 @@ class Doughnut {
   }
 }
 
-class BostonCream < Doughnut {}
+class BostonCream < Doughnut {
+  cook() {
+    super.cook();
+    print "wow cream!";
+  }
+}
 
-BostonCream().cook();
+class Mess < BostonCream {
+  cook() {
+    print "???????";
+    super.cook();
+  }
+}
+
+Mess().cook();
