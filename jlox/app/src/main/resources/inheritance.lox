@@ -1,0 +1,9 @@
+class Doughnut {
+  cook() {
+    print "Fly until golden brown.";
+  }
+}
+
+class BostonCream < Doughnut {}
+
+BostonCream().cook();
