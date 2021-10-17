@@ -6,6 +6,9 @@
 #define CLOX_VM_H
 
 #include "chunk.h"
+#include "value.h"
+
+#define STACK_MAX 256
 
 typedef struct {
     Chunk* chunk;
@@ -25,5 +28,7 @@ void initVM();
 void freeVM();
 
 InterpretResult interpret(Chunk* chunk);
+void push(Value value);
+Value pop();
 
 #endif //CLOX_VM_H
